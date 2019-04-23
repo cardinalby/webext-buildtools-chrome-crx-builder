@@ -1,6 +1,6 @@
 {
   "name": "webext-buildtools-chrome-crx-builder",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "webext-buildtools builder for packing and signing Chrome Web Extension for offline distribution",
   "main": "dist",
   "keywords": [
@@ -27,6 +27,7 @@
     "dist/**/*.d.ts",
     "dist/**/*.js",
     "declarations/**/*.d.ts",
+    "external_declarations/**/*.d.ts",
     "LICENSE"
   ],
   "dependencies": {

@@ -36,7 +36,7 @@ const buildResult = await builder.build();
 ```
 
 ### Options
-Options object described in [declaration/options.d.ts](declaration/options.d.ts)
+Options object described in [declarations/options.d.ts](declarations/options.d.ts)
 
 [See](https://github.com/cardinalby/webext-buildtools-integrated-builder/blob/master/logMethod.md) how to get `logMethod` for pretty output.
 
