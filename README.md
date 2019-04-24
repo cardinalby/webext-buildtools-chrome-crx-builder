@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.com/cardinalby/webext-buildtools-chrome-crx-builder.svg?branch=master)](https://travis-ci.com/cardinalby/webext-buildtools-chrome-crx-builder)
-
 ### Introduction
 *webext-buildtools* builder for packing and signing Chrome Web Extension for offline distribution built 
 on base of [crx](https://github.com/oncletom/crx) package.
@@ -23,7 +22,7 @@ const ChromeCrxBuilder = require('webext-buildtools-chrome-crx-builder').default
 const fs = require('fs-extra');
 
 const options = { ... }; // see description below
-const logMethod = (level, message) => console.log(level, message);
+const logMethod = console.log;
 const builder = new ChromeCrxBuilder(options, logMethod);
 
 builder.setInputManifest(await fs.readJson('./ext_dir/package.json'))
@@ -45,10 +44,23 @@ Options object described in [declarations/options.d.ts](declarations/options.d.t
 2. **`setInputZipBuffer(...)`**. Buffer with zipped extension dir. Required to produce packed `crx` file
 
 ### Outputs
-1. **crx**. `requireCrxFile()`, `requireCrxBuffer()`. Packed and signed crx file. 
-    Required options: `privateKey` or `privateKeyFilePath`, `crxFilePath` for file
-2. **update.xml**. `requireUpdateXmlFile()`, `requireUpdateXmlBuffer()`. 
-    updateXML for extensions hosted not on Chrome Web Store. This xml is used as response 
-    at url, specified in manifest's `update_url` key. 
-    See [https://developer.chrome.com/apps/autoupdateBuffer](https://developer.chrome.com/apps/autoupdateBuffer) 
-    for details.       
+#### crx
+packed and signed (using private key specified in options) crx file <br>
+
+*Required options:* `privateKey` or `privateKeyFilePath`, `crxFilePath` for file <br>
+*Require methods:* `requireCrxFile()`, `requireCrxBuffer()` <br>
+*Assets:* <br> 
+`const buffer = buildResult.getAssets().crxBuffer.getValue()`<br>
+`const crxFilePath = buildResult.getAssets().crxFile.getValue()`
+
+#### update.xml 
+updateXML for extensions hosted not on Chrome Web Store. This xml is used as response 
+at url, specified in manifest's `update_url` key. 
+See [https://developer.chrome.com/apps/autoupdateBuffer](https://developer.chrome.com/apps/autoupdateBuffer) 
+for details.       
+
+*Required options:* `updateXml.outFilePath` (for not temporary file), `updateXml.codebaseUrl` <br>
+*Require methods:* `requireUpdateXmlFile()`, `requireUpdateXmlBuffer()` <br>
+*Assets:* <br>
+`const buffer = buildResult.getAssets().updateXmlBuffer.getValue()`<br>
+`const xmlFilePath = buildResult.getAssets().updateXmlFile.getValue()`    
