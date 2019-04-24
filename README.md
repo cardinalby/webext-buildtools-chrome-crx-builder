@@ -43,6 +43,9 @@ Options object described in [declarations/options.d.ts](declarations/options.d.t
 1. **`setInputManifest(...)`**. Object with parsed extension's `package.json`. Required to produce `update.xml` file
 2. **`setInputZipBuffer(...)`**. Buffer with zipped extension dir. Required to produce packed `crx` file
 
+You can use [webext-buildtools-dir-reader-mw](https://www.npmjs.com/package/webext-buildtools-dir-reader-mw)
+to generate needed inputs from extension directory.
+
 ### Outputs
 #### crx
 packed and signed (using private key specified in options) crx file <br>
