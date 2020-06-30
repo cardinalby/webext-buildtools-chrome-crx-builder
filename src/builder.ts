@@ -1,15 +1,15 @@
 import * as fs from 'fs-extra';
 import { ISimpleBuilder } from 'webext-buildtools-builder-types';
-import { AbstractSimpleBuilder, BufferBuildAsset, FileBuildAsset } from 'webext-buildtools-utils';
+import {
+    AbstractSimpleBuilder,
+    BufferBuildAsset,
+    FileBuildAsset,
+    extractManifestFromZipBuffer,
+    IManifestObject
+} from 'webext-buildtools-utils';
 import { IChromeCrxOptions } from '../declarations/options';
 import { ChromeCrxBuildResult } from './buildResult';
 import { CrxWrapper } from './crxWrapper';
-
-export interface IWebextManifest {
-    name: string;
-    version: string;
-    [key: string]: any;
-}
 
 // noinspection JSUnusedGlobalSymbols
 /**
@@ -22,7 +22,7 @@ export class ChromeCrxBuilder
     public static readonly TARGET_NAME = 'chrome-zip2crx';
 
     protected _inputZipBuffer?: Buffer;
-    protected _inputManifest?: IWebextManifest;
+    protected _inputManifest?: IManifestObject;
     protected _crxFileRequirement?: boolean;  // temp or not
     protected _isCrxBufferRequired: boolean = false;
     protected _updateXmlFileRequirement?: boolean;
@@ -38,7 +38,7 @@ export class ChromeCrxBuilder
         return this;
     }
 
-    public setInputManifest(manifest: IWebextManifest): this {
+    public setInputManifest(manifest: IManifestObject): this {
         if (!manifest.name || !manifest.version) {
             throw Error('Invalid manifest object, id and name fields are required');
         }
@@ -51,6 +51,7 @@ export class ChromeCrxBuilder
      * this.setInputZipBuffer() should be called before build
      */
     public requireCrxFile(temporary: boolean = false): this {
+        // noinspection PointlessBooleanExpressionJS
         this._crxFileRequirement = !!temporary;
         return this;
     }
@@ -69,6 +70,7 @@ export class ChromeCrxBuilder
      * this.setInputManifest() should be called before build
      */
     public requireUpdateXmlFile(temporary: boolean = false): this {
+        // noinspection PointlessBooleanExpressionJS
         this._updateXmlFileRequirement = !!temporary;
         return this;
     }
@@ -96,7 +98,17 @@ export class ChromeCrxBuilder
 
         if (this.isOutputUpdateXmlRequired()) {
             if (!this._inputManifest) {
-                throw new Error('Input manifest is required to produce updateXml file or buffer output');
+                if (!this._inputZipBuffer) {
+                    throw new Error(
+                        'Input manifest is required to produce updateXml file or buffer output. ' +
+                        'Neither manifest or zip buffer are set'
+                    );
+                }
+                this._logWrapper.info('Manifest input is not set, reading from zip...');
+                this._inputManifest = await extractManifestFromZipBuffer(this._inputZipBuffer);
+                this._logWrapper.info(
+                    `Manifest extracted. Extension name: '${this._inputManifest.name}', ` +
+                    `version: ${this._inputManifest.version}`);
             }
             if (!this._inputManifest.update_url) {
                 this._logWrapper.warn(

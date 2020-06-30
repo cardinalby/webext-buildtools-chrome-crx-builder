@@ -25,6 +25,7 @@ const options = { ... }; // see description below
 const logMethod = console.log;
 const builder = new ChromeCrxBuilder(options, logMethod);
 
+// if you omit manifest it will be extracted from the zip buffer
 builder.setInputManifest(await fs.readJson('./ext_dir/package.json'))
 builder.setInputZipBuffer(await fs.read('./packed.zip'));
 
@@ -40,7 +41,8 @@ Options object described in [declarations/options.d.ts](declarations/options.d.t
 [See](https://github.com/cardinalby/webext-buildtools-integrated-builder/blob/master/logMethod.md) how to get `logMethod` for pretty output.
 
 ### Inputs
-1. **`setInputManifest(...)`**. Object with parsed extension's `package.json`. Required to produce `update.xml` file
+1. **`setInputManifest(...)`**. Object with parsed extension's `package.json`. 
+Required to produce `update.xml` file. If omitted, will be extracted from zip buffer.
 2. **`setInputZipBuffer(...)`**. Buffer with zipped extension dir. Required to produce packed `crx` file
 
 You can use [webext-buildtools-dir-reader-mw](https://www.npmjs.com/package/webext-buildtools-dir-reader-mw)
