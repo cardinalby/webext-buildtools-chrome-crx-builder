@@ -3,6 +3,7 @@ import * as path from "path";
 import * as fs from 'fs-extra';
 import ChromeCrxBuilder, {IChromeCrxOptions} from "../../dist";
 import * as crypto from "crypto";
+import {PathLike} from "fs";
 
 describe('crxBuilder', () => {
     const extensionDir = path.join(__dirname, 'extension');
@@ -12,6 +13,8 @@ describe('crxBuilder', () => {
     const zipFilePath = path.join(outDirPath, 'extension.zip');
     const crxFilePath = path.join(outDirPath, 'extension.crx');
     const updateXmlFilePath = path.join(outDirPath, 'update.xml');
+
+    const rm = (path: PathLike) => fs.existsSync(path) && fs.rmSync(path);
 
     beforeAll(async () => {
         const privateKey = crypto.generateKeyPairSync("rsa", {
@@ -31,16 +34,13 @@ describe('crxBuilder', () => {
     })
 
     afterEach(() => {
-        if (fs.existsSync(crxFilePath)) {
-            fs.rmSync(crxFilePath);
-        }
-        if (fs.existsSync(updateXmlFilePath)) {
-            fs.rmSync(updateXmlFilePath);
-        }
+        rm(crxFilePath);
+        rm(updateXmlFilePath);
     })
 
     afterAll(() => {
-        fs.emptyDirSync(outDirPath);
+        rm(privateKeyFilePath);
+        rm(zipFilePath);
     })
 
     test.each([
