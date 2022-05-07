@@ -14,7 +14,7 @@ To read what are *webext-buildtools* and *builders* go to
 
 ### Purpose
 Builder allows you to build and sign your Web Extension for offline distribution. 
-Read more details at [Alternative Extension Distribution Options](https://developer.chrome.com/apps/external_extensions).
+Read more details at [Alternative Extension Distribution Options](https://developer.chrome.com/docs/extensions/mv3/external_extensions/).
 
 ### Usage example
 ```js
@@ -26,8 +26,8 @@ const logMethod = console.log;
 const builder = new ChromeCrxBuilder(options, logMethod);
 
 // if you omit manifest it will be extracted from the zip buffer
-builder.setInputManifest(await fs.readJson('./ext_dir/package.json'))
-builder.setInputZipBuffer(await fs.read('./packed.zip'));
+builder.setInputManifest(await fs.readJson('./ext_dir/manifest.json'))
+builder.setInputZipBuffer(await fs.readFile('./packed.zip'));
 
 builder.requireCrxFile();
 builder.requireUpdateXmlFile();
@@ -61,7 +61,7 @@ packed and signed (using private key specified in options) crx file <br>
 #### update.xml 
 updateXML for extensions hosted not on Chrome Web Store. This xml is used as response 
 at url, specified in manifest's `update_url` key. 
-See [https://developer.chrome.com/apps/autoupdateBuffer](https://developer.chrome.com/apps/autoupdateBuffer) 
+See [https://developer.chrome.com/docs/apps/autoupdate/#update_url](https://developer.chrome.com/docs/apps/autoupdate/#update_url) 
 for details.       
 
 *Required options:* `updateXml.outFilePath` (for not temporary file), `updateXml.codebaseUrl` <br>
